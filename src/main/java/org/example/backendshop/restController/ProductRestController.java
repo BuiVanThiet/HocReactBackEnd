@@ -37,10 +37,11 @@ public class ProductRestController extends BaseRestController {
     }
 
     @GetMapping("/product/{id}")
-    public ProductResponse getProductById(@PathVariable("id") String id) {
-            Integer idInteger = Integer.parseInt(id);
-            ProductResponse productResponse = productService.getProductById(idInteger);
-            if(productResponse.getId() == null) {
+    public ProductResponse getProductById(@PathVariable("id") String id,HttpSession session) {
+        Integer idInteger = Integer.parseInt(id);
+        ProductResponse productResponse = productService.getProductById(idInteger);
+        session.setAttribute("idProduct", productResponse.getId());
+        if(productResponse.getId() == null) {
                 return null;
             }
             return productResponse;

@@ -24,7 +24,9 @@ public class ProductDetailRestController extends BaseRestController {
     }
 
     @GetMapping("/all-product-detail/{idPR}")
-    public List<Object[]> getListProductDetail(@PathVariable("idPR") String idPR) {
+    public List<Object[]> getListProductDetail(@PathVariable("idPR") String idPR,HttpSession session) {
+        session.setAttribute("idProduct", Integer.parseInt(idPR));
+        System.out.println("id product : "+idPR);
         return this.productDetailService.getAllProductDetail(Integer.parseInt(idPR));
     }
     @PostMapping("/add_product_detail")
@@ -33,6 +35,8 @@ public class ProductDetailRestController extends BaseRestController {
             return ResponseEntity.badRequest().body("Danh sách sản phẩm chi tiết không được để trống.");
         }
         Integer idProduct = (Integer) session.getAttribute("idProduct");
+
+        System.out.println("id product them bien the: "+idProduct);
 
         for (ProductDetailResponse response : listProductDetail) {
             ProductDetail productDetail = new ProductDetail();
@@ -57,8 +61,8 @@ public class ProductDetailRestController extends BaseRestController {
             productDetail.setUpdateDate(new Date());
             productDetail.setStatus(response.getStatus());
             this.productDetailService.save(productDetail);
-            messagingTemplate.convertAndSend("/topic/productDetail", productDetail);
         }
+        messagingTemplate.convertAndSend("/topic/productDetail", idProduct);
         return ResponseEntity.ok("Thêm sản phẩm chi tiết thành công.");
     }
     @PostMapping("/update_product_detail")

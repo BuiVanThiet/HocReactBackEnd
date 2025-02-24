@@ -28,14 +28,14 @@ public class CategoryRestController extends BaseRestController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> getAdd(@RequestBody AttributeRequest attributeRequest, @PathVariable(name = "typeAttribute") String typeAttribute) {
+    public ResponseEntity<?> getAdd(@RequestBody AttributeRequest attributeRequest) {
         Category category = new Category();
         category.setCodeCategory(attributeRequest.getCode().trim());
         category.setNameCategory(attributeRequest.getName().trim());
         category.setStatus(attributeRequest.getStatus());
         category.setCreateDate(new Date());
         category.setUpdateDate(new Date());
-        System.out.println("them "+typeAttribute);
+        System.out.println("them "+attributeRequest.toString());
         this.categoryService.save(category);
         // Gửi thông báo tới tất cả các client về dữ liệu mới
         messagingTemplate.convertAndSend("/topic/category", category);
